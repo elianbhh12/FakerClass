@@ -184,13 +184,6 @@ Exportamos a Excel y confirmamos por consola.
 
 ---
 
-## 🐞 Troubleshooting
-- **No aparecen filas:** revisa formato de fecha `YYYY-MM-DD` y estados exactos.
-- **Correo vacío:** valida condición previa (no envíes si longitud = 0) o revisa permisos.
-- **Zona horaria:** usa `startOfDay(utcNow())` para evitar desfases.
-
----
-
 ## 🧩 Script completo (copiar/pegar)
 ```python
 from faker import Faker
@@ -274,5 +267,4 @@ print(" Archivo 'tareas.xlsx' creado")
 
 ---
 
-## 📄 Licencia
-MIT — úsalo y modifícalo libremente en tus clases o proyectos.
+
