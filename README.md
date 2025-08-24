@@ -144,34 +144,43 @@ Exportamos a Excel y confirmamos por consola.
 - Pesos de estado → modifica `weights=[0.6, 0.25, 0.15]`.
 - Locale de Faker → `Faker('es_MX')`, `Faker('es_ES')`, etc.
 - Fecha local (en vez de UTC) → `hoy = datetime.now()`.
-- Columnas extra (útiles en flujos):  
-  ```python
-  "FechaCreacion": (hoy - timedelta(days=random.randint(0, 30))).strftime("%Y-%m-%d"),
-  "URL": fake.url(),
-  "UltimoAviso": ""
-  ```
-
-> Si agregas `URL`, en **Crear tabla HTML** puedes mostrar:  
-> `@{concat('<a href="', item()?['URL'], '">Abrir</a>')}`
 
 ---
 
+
+
 ## 🔗 Uso en Power Automate (resumen)
-1. **Listar filas presentes en una tabla** (Excel → `tareas.xlsx`, Tabla `Tareas`).  
-2. **Filtrar matriz** (ejemplos):  
-   - **Vencidas:** `FechaVencimiento < startOfDay(utcNow())` y `Estado = Pendiente`.  
-   - **Vence hoy:** `startOfDay(FechaVencimiento) = startOfDay(utcNow())` y `Estado ≠ Completada`.  
-   - **Próximas (1–3 días):** `FechaVencimiento ∈ [mañana, +3 días]` y `Estado ≠ Completada`.
-3. **Crear tabla HTML** (Columnas personalizadas): `Titulo`, `Vence (dd/MM/yyyy)`, `Responsable`, `Estado`, `Acción (Abrir)`.
-4. **Enviar** a Teams (Publicar mensaje) o **Correo (V2)** con *Es HTML = Sí*.
+
+> **Acceso directo:** [Abrir Power Automate](https://make.powerautomate.com/environments/Default-f57a5949-3738-41ef-a86e-00490c08ccb5/home)
+
+> **IMPORTANTE**
+> - En **Excel**, convierte el rango a **Tabla** y nómbrala **`Tareas`** (*Insertar → Tabla → Nombre de tabla: `Tareas`*).
+> - Sube `tareas.xlsx` **preferiblemente a SharePoint** (biblioteca del equipo). Evita OneDrive personal para ambientes colaborativos.
+
+1. **Enumerar las filas de una tabla** (Excel Online (Business) → archivo `tareas.xlsx`, **Tabla `Tareas`**).  
+2. **Filtrar matriz** (reglas típicas):
+   - **Vencidas:** `FechaVencimiento < startOfDay(utcNow())` **y** `Estado = Pendiente`.
+   - **Vence hoy:** `startOfDay(FechaVencimiento) = startOfDay(utcNow())` **y** `Estado ≠ Completada`.
+   - **Próximas (1–3 días):** `FechaVencimiento ∈ [mañana, +3 días]` **y** `Estado ≠ Completada`.
+3. **Crear tabla HTML** (Columnas personalizadas): `Titulo`, `Vence (dd/MM/yyyy)`, `Responsable`, `Estado`, `Acción (Abrir)`.  
+4. **Enviar** a **Teams** (Publicar mensaje en un canal) o **Correo (V2)**, marcando **Es HTML = Sí**.
+
+> **Ruta sugerida en SharePoint**  
+> `https://<tu-tenant>.sharepoint.com/sites/<TuSitio>/Documentos compartidos/Automatizaciones/tareas.xlsx`
 
 ---
 
 ## ✅ Checklist antes de correr el flujo
-- [ ] `tareas.xlsx` existe y abre correctamente.
-- [ ] Nombres de columnas coinciden con lo esperado por el flujo.
-- [ ] (Opcional) Convertido a **Tabla** llamada **`Tareas`**.
-- [ ] Casos de control presentes (mañana, hoy, ayer).
+
+- [ ] **`tareas.xlsx` está en SharePoint** (recomendado) en una carpeta con permisos para el equipo.  
+- [ ] El rango de datos está en **formato Tabla** y el **nombre de la Tabla es `Tareas`**.  
+- [ ] Los **nombres de columnas** coinciden con los usados por el flujo (`Titulo`, `Responsable`, `FechaVencimiento`, `Estado`, etc.).  
+- [ ] Existen **casos de control** (mañana, hoy, ayer) para prueba rápida.  
+- [ ] En **Enumerar las filas de una tabla** está **habilitada la paginación** (umbral ≥ 5000).  
+- [ ] Nadie tiene el archivo abierto en edición cuando corra el flujo (evita bloqueos del conector).  
+
+> **Por qué SharePoint > OneDrive:** mejor colaboración (permisos por sitio/canal), menos bloqueos por edición y referencia más estable desde Power Automate.
+
 
 ---
 
