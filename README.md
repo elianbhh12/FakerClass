@@ -165,8 +165,6 @@ Exportamos a Excel y confirmamos por consola.
 3. **Crear tabla HTML** (Columnas personalizadas): `Titulo`, `Vence (dd/MM/yyyy)`, `Responsable`, `Estado`, `Acción (Abrir)`.  
 4. **Enviar** a **Teams** (Publicar mensaje en un canal) o **Correo (V2)**, marcando **Es HTML = Sí**.
 
-> **Ruta sugerida en SharePoint**  
-> `https://<tu-tenant>.sharepoint.com/sites/<TuSitio>/Documentos compartidos/Automatizaciones/tareas.xlsx`
 
 ---
 
