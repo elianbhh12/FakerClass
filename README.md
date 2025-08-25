@@ -1,6 +1,9 @@
 # Generador de **tareas.xlsx** con Faker → insumo para Power Automate
 
-> **Propósito:** Crear un archivo Excel con tareas realistas para practicar flujos de **alertas de vencimiento** en **Power Automate** (Teams/Correo). Pensado para clases y demos.
+**Duración total:** 90–120 min 
+**Propósito:** Crear un archivo Excel con tareas realistas para practicar flujos de **alertas de vencimiento** en **Power Automate** (Teams/Correo). Pensado para clases y demos. 
+**Objetivo:** generar un Excel con datos realistas y construir un flujo en Power Automate que envíe recordatorios (Teams/Correo) de tareas próximas a vencer.  
+**KPI del taller:** Al final, tu flujo debe publicar/mandar un mensaje con una tabla de tareas que **vencen en 1–3 días**.
 
 ---
 
@@ -265,4 +268,61 @@ print(" Archivo 'tareas.xlsx' creado")
 
 ---
 
+## 2 Parte B — Flujo en Power Automate (60–75 min)
 
+### 2.1 Recurrence — `Reloj_diario_08:00`
+- Frecuencia: **Diario**, 08:00  
+- Zona horaria: **(UTC-05:00) Bogotá, Lima, Quito**
+
+### 2.2 Enumerar filas — `Excel_Listar_Tareas`
+- Ubicación: SharePoint  
+- Archivo: `tareas.xlsx`  
+- **Tabla:** `Tareas`  
+- Configuración (⋯): **Habilitar paginación** (umbral 5000)
+
+### 2.3 Filtrar matriz — `Filtro_Proximas_1a3_dias`
+- **De (From):**
+```
+@{body('Excel_Listar_Tareas')?['value']}
+```
+- **Condición (modo avanzado):** *1–3 días antes, no completadas*
+```
+@and(
+  not(equals(item()?['Estado'],'Completada')),
+  greaterOrEquals(
+    ticks(item()?['FechaVencimiento']),
+    ticks(startOfDay(addDays(utcNow(), 1)))
+  ),
+  less(
+    ticks(item()?['FechaVencimiento']),
+    ticks(startOfDay(addDays(utcNow(), 4)))
+  )
+)
+```
+> Si `FechaVencimiento` llega como texto, usa `ticks(concat(item()?['FechaVencimiento'],'T00:00:00Z'))`.
+
+### 2.4 Crear tabla HTML — `HTML_Tabla_Recordatorios`
+- **De (From):**
+```
+@{body('Filtro_Proximas_1a3_dias')}
+```
+- **Columnas → Personalizado**
+  - **Tarea:** `{item()?['Titulo']}`
+  - **Vence:** `item()?['FechaVencimiento']`
+  - **Responsable:** `{item()?['Responsable']}`
+  - **Estado:** `{item()?['Estado']}`
+
+
+### 2.5 Publicar en Teams — `Teams_Publicar_Recordatorios`
+- **Mensaje (HTML)**
+```html
+<h3> Recordatorios de vencimiento (1–3 días)</h3>
+@{body('HTML_Tabla_Recordatorios')}
+```
+
+### 2.6 Enviar correo (V2) — `Correo_Enviar_Recordatorios`
+- **Asunto:** `Recordatorios 1–3 días - @{formatDateTime(utcNow(),'yyyy-MM-dd')}`  
+- **Cuerpo:** usa el **mismo** HTML del paso 4.5  
+- **Es HTML:** **Sí**
+
+---
