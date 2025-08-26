@@ -119,18 +119,6 @@ for i in range(120):
 ```
 Generamos **120** tareas con mezcla de fechas futuras/pasadas y estados con pesos realistas (*Pendiente 60%*, *En Progreso 25%*, *Completada 15%*). La fecha va en formato **`YYYY-MM-DD`** (fácil de filtrar en Power Automate).
 
-```python
-# Casos especiales para pruebas (los primeros 3)
-tareas[0]["FechaVencimiento"] = (hoy + timedelta(days=1)).strftime("%Y-%m-%d")  # Mañana
-tareas[0]["Estado"] = "Pendiente"
-
-tareas[1]["FechaVencimiento"] = hoy.strftime("%Y-%m-%d")  # Hoy
-tareas[1]["Estado"] = "Pendiente"
-
-tareas[2]["FechaVencimiento"] = (hoy - timedelta(days=1)).strftime("%Y-%m-%d")  # Ayer
-tareas[2]["Estado"] = "Pendiente"
-```
-Insertamos **3 casos de control** para validar fácilmente los filtros del flujo (*mañana*, *hoy*, *ayer*).
 
 ```python
 df = pd.DataFrame(tareas)
@@ -249,15 +237,6 @@ for i in range(120):
     
     tareas.append(tarea)
 
-# Casos especiales para pruebas (los primeros 3)
-tareas[0]["FechaVencimiento"] = (hoy + timedelta(days=1)).strftime("%Y-%m-%d")  # Mañana
-tareas[0]["Estado"] = "Pendiente"
-
-tareas[1]["FechaVencimiento"] = hoy.strftime("%Y-%m-%d")  # Hoy
-tareas[1]["Estado"] = "Pendiente"
-
-tareas[2]["FechaVencimiento"] = (hoy - timedelta(days=1)).strftime("%Y-%m-%d")  # Ayer
-tareas[2]["Estado"] = "Pendiente"
 
 # Crear Excel
 df = pd.DataFrame(tareas)
