@@ -247,6 +247,10 @@ print(" Archivo 'tareas.xlsx' creado")
 
 ---
 
+
+
+<img width="921" height="501" alt="image" src="https://github.com/user-attachments/assets/016061a5-4787-46f4-a2f2-2b1d58e70fce" />
+
 ## 2 Parte B — Flujo en Power Automate (60–75 min)
 
 ### 2.1 Recurrence — `Reloj_diario_08:00`
